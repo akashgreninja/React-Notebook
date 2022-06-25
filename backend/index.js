@@ -1,11 +1,12 @@
 const connectToMongo= require('./db');
 const express = require('express')
 const app = express()
-const port = 3000
+const port = 5000
 
 app.use(express.json())
 connectToMongo();
 
+// to maintain the proper flow of code we have used the routes folder 
 app.use('/api/auth',require('./routes/auth'))
 app.use('/api/notes',require('./routes/notes'))
 

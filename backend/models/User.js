@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const {Schema}=mongoose;
 
+
+// This creates the table or the frame of the table can be updates but might throw errors 
 const UserSchema = new Schema({
    name:{
     type:String,
@@ -23,5 +25,7 @@ const UserSchema = new Schema({
   });
 
 const User=mongoose.model('user',UserSchema)
-User.createIndexes();
+
+// Not sure why he added that
+// User.createIndexes();
 module.exports=User
