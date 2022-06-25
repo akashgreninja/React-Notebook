@@ -8,12 +8,13 @@ const UserSchema = new Schema({
    },
    email:{
     type:String,
-    require:true
+    require:true,
+    unique:true
    },
    password:{
     type:String,
     require:true,
-    unique:true
+    
    },
    Date:{
     type:Date,
@@ -21,4 +22,6 @@ const UserSchema = new Schema({
    }
   });
 
-module.exports=mongoose.model('user',UserSchema)
+const User=mongoose.model('user',UserSchema)
+User.createIndexes();
+module.exports=User
