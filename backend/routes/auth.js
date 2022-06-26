@@ -1,65 +1,98 @@
+const express = require("express");
+const User = require("../models/User");
+const router = express.Router();
+const { body, validationResult } = require("express-validator");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
-const express = require('express')
-const User = require('../models/User')
-const router =express.Router()
-const { body, validationResult } = require('express-validator');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+const JWT_SECRET = "AKASH";
 
-
-
-
-const JWT_SECRET='AKASH'
-
-
-
-router.post('/createuser',[
+//Route 1:It is used to create a user
+router.post(
+  "/createuser",
+  [
     // used for validation
-    body('name','Enter a valid name').isLength({min:3}),
-    body('email','enter a valid').isEmail(),
-    body('password',"atleast 3 char").isLength({min:3}),
-],async(req,res)=>{
+    body("name", "Enter a valid name").isLength({ min: 3 }),
+    body("email", "enter a valid").isEmail(),
+    body("password", "atleast 3 char").isLength({ min: 3 }),
+  ],
+  async (req, res) => {
     // checks for the erros produced while validation
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    
-    try{
-    // This sends the data to the database and also checks if the user exits
-    // always use await with long processes
-    let user= await User.findOne({email:req.body.email})
-    if(user){
-        return res.status(400).json({err:"Sorry user with this email already exists"})
-    }
-    const salt =await bcrypt.genSalt(10);
-    const secPass=await bcrypt.hash(req.body.password,salt) 
-    user=await User.create({
+
+    try {
+      // This sends the data to the database and also checks if the user exits
+      // always use await with long processes
+      let user = await User.findOne({ email: req.body.email });
+      if (user) {
+        return res
+          .status(400)
+          .json({ err: "Sorry user with this email already exists" });
+      }
+      const salt = await bcrypt.genSalt(10);
+      const secPass = await bcrypt.hash(req.body.password, salt);
+      user = await User.create({
         name: req.body.name,
         email: req.body.email,
-        password:secPass
-      })
-    const data={
-        user:{
-            id:user.id
-        }
+        password: secPass,
+      });
+      const data = {
+        user: {
+          id: user.id,
+        },
+      };
+      const authtoken = jwt.sign(data, JWT_SECRET);
+      console.log(authtoken);
+
+      //  this is just to output the data as response
+      res.json({ authtoken });
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).send("some error from our side ");
+    }
+  }
+);
+
+//Route 2:It is used to authenticate/login a user
+router.post(
+  "/login",
+  [
+    body("email", "enter a valid").isEmail(),
+    body("password", "Cannot be blank").exists(),
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    // const {email,password}=req.body;
+    const email = req.body.email;
+    const password = req.body.password;
+    try {
+      let user = await User.findOne({ email });
+      if (!user) {
+        return res.status(400).json({ error: "Please try to login again" });
       }
-    const authtoken= jwt.sign(data,JWT_SECRET)
-    console.log(authtoken)
-   
-    //  this is just to output the data as response 
-    res.json({authtoken})
-
+      const passwordCompare = await bcrypt.compare(password, user.password);
+      if (!passwordCompare) {
+        return res.status(400).json({ error: "Please try to login again" });
+      }
+      const data = {
+        user: {
+          id: user.id,
+        },
+      };
+      const authtoken = jwt.sign(data, JWT_SECRET);
+      console.log(authtoken);
+      res.json({ authtoken });
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).send("some error from our side ");
     }
-    catch(error){
-        console.log(error.message)
-        res.status(500).send("some error from our side ")
-    }
-    
+  }
+);
 
-})
-
-
-
-
-module.exports=router
+module.exports = router;
