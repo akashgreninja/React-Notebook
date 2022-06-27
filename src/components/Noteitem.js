@@ -3,11 +3,14 @@ import noteContext from '../context/notes/NoteContext.js'
 
 const Noteitem = (props) => {
   const context = useContext(noteContext)
-  const{deleteNote}=context
-  const { note } = props;
+  const{deleteNote,editNote}=context
+  const { note,updateNote } = props;
   const handleOnClick=()=>{
     console.log("clicked")
     deleteNote(note._id)
+  }
+  const handleEdit=()=>{
+    updateNote(note)
   }
   return (
     <>
@@ -16,7 +19,7 @@ const Noteitem = (props) => {
           <div className="card-body">
             <div className="d-flex align-items-center">
             <h5 className="card-title"> {note.title}</h5>
-              <i className="fa-solid fa-pen-to-square mx-2"></i>
+              <i className="fa-solid fa-pen-to-square mx-2" onClick={handleEdit}></i>
               <i className="fa-solid fa-trash-can mx-2" onClick={handleOnClick}></i>
             </div>
             

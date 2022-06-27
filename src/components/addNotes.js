@@ -4,7 +4,7 @@ import noteContext from '../context/notes/NoteContext.js'
 const AddNotes = () => {
   const context=useContext(noteContext)
   const{addNote}=context
-  const [note, setnote] = useState({"text":"","description":"","tag":"default"})
+  const [note, setnote] = useState({title:"",description:"",tag:"default"})
   const handleOnClick=(e)=>{
     e.preventDefault();
     addNote(note.title,note.description,note.tag)
