@@ -7,29 +7,38 @@ import AddNotes from './addNotes.js'
 function Notes() {
    
     const context=useContext(notecontext)
-    const{notes,allNotes}=context;
+    const{notes,allNotes,editNote}=context;
 
     useEffect(() => {
       allNotes()
     
-      
+      // eslint-disable-next-line 
     }, [])
   
     const ref = useRef(null)
-    const [note, setNote] = useState({etitle:"",edescription:"",etag:""})
+    const refClose=useRef()
+    const [note, setnote] = useState({id:"",etitle:"",edescription:"",etag:""})
     
-    const updateNote=(currentNote)=>{
+    const updateNote=(random)=>{
       ref.current.click()
-      setNote({etitle: currentNote.title, edescription: currentNote.description, etag:currentNote.tag})
+      // console.log(random._id)
+      setnote({id:random._id,etitle:random.title,edescription:random.description,etag:random.tag})
+      // console.log(note.id)
+     
     }
 
     const handleOnClick=(e)=>{
-      e.preventDefault();
+      // console.log("updating"+note)
+      editNote(note.id,note.etitle,note.edescription,note.etag)
+      // console.log(note.id)
+    
+      refClose.current.click()
+
     
   
     } 
     const onChange=(e)=>{
-      setNote({...note,[e.target.name]:e.target.value})
+      setnote({...note,[e.target.name]:e.target.value})
     }
  
   return (
@@ -79,12 +88,26 @@ function Notes() {
            
           />
         </div>
+        <div className="mb-3">
+          <label htmlFor="exampleInputPassword1" className="form-label">
+            description
+          </label>
+          <input
+            type="text"
+            className="form-control"
+            id="etag"
+            name='etag'
+            value={note.etag}
+            onChange={onChange}
+           
+          />
+        </div>
 
       </form>
       </div>
       <div className="modal-footer">
-        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" className="btn btn-primary">Update</button>
+        <button type="button" ref={refClose} className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button"  onClick={handleOnClick} className="btn btn-primary">Update</button>
       </div>
     </div>
   </div>

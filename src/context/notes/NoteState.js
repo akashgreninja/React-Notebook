@@ -28,14 +28,16 @@ const NoteState = (props) => {
         "Content-Type": "application/json",
         "auth-token":
           "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjJiN2U1Njg5YzM5ZDVkZWY2YTcxNGY5In0sImlhdCI6MTY1NjIyMjEwMn0.q9JPEcAz0BZxARLXZAWXG1DIFLokRg37sA2LzYqxZ7g",
-          // 'Accept':'application/json' 
+          'Accept':'application/json' 
       },
       body: JSON.stringify({ title, description, tag }), // body data type must match "Content-Type" header
     });
+    const json=response.json()
+    console.log(json+"dehbhbddbhdbwh")
 
     console.log("adding");
     let note = {
-      _id: "sqasqqqqsqsqss",
+      _id: "62b7e5689c39d5def6a714f9",
       user: "62b7e5689c39d5def6a714f9",
       title: title,
       description: description,
@@ -59,7 +61,7 @@ const NoteState = (props) => {
     const json=await response.json()
     console.log(json)
     setnotes(json)
-    console.log("deleting it " + id);
+    // console.log("deleting it " + id);
     const newnotess = notes.filter((note) => {
       return note._id !== id;
     });
@@ -69,7 +71,7 @@ const NoteState = (props) => {
   //to edit a note
   const editNote = async (id, title, description, tag) => {
     const response = await fetch(`${host}/api/notes/updatenote/${id}`, {
-      method: "POST",
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
         "auth-token":
@@ -77,15 +79,20 @@ const NoteState = (props) => {
       },
       body: JSON.stringify({ title, description, tag }), // body data type must match "Content-Type" header
     });
-    const json = response.json(); // parses JSON response into native JavaScript objects
+    const json = await response.json(); 
+    console.log(json)// parses JSON response into native JavaScript objects
 
-    for (let index = 0; index < notes.length; index++) {
-      const element = notes[index];
+
+    let newnotes=JSON.parse(JSON.stringify(notes))
+    for (let index = 0; index < newnotes.length; index++) {
+      const element = newnotes[index];
       if (element._id === id) {
         element.title = title;
         element.description = description;
         element.tag = tag;
+   
       }
+      setnotes(newnotes)
     }
   };
 
