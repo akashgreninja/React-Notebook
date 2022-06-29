@@ -4,7 +4,7 @@ import Noteitem from './Noteitem.js'
 import AddNotes from './addNotes.js'
 
 
-function Notes() {
+function Notes(props) {
    
     const context=useContext(notecontext)
     const{notes,allNotes,editNote}=context;
@@ -23,6 +23,7 @@ function Notes() {
       ref.current.click()
       // console.log(random._id)
       setnote({id:random._id,etitle:random.title,edescription:random.description,etag:random.tag})
+      props.showAlert("updated sucessfully","success")
       // console.log(note.id)
      
     }
@@ -33,6 +34,7 @@ function Notes() {
       // console.log(note.id)
     
       refClose.current.click()
+      props.showAlert("updated sucessfully","success")
 
     
   
@@ -43,7 +45,7 @@ function Notes() {
  
   return (
     <>
-    <AddNotes/>
+    <AddNotes showAlert={props.showAlert}/>
   
 
     <button type="button" className="btn btn-primary d-none" ref={ref} data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -119,7 +121,7 @@ function Notes() {
       <h1>yOUR NOTES</h1>
       {notes.length===0 &&'No notes to display'}
       {notes.map((element)=>{
-        return <Noteitem key={element._id} note={element} updateNote={updateNote} />
+        return <Noteitem key={element._id} note={element} updateNote={updateNote} showAlert={props.showAlert} />
       })}
       </div>
       </>

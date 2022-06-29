@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 
 
 
-const Register = () => {
+const Register = (props) => {
   let navigate= useNavigate();
   const [details, setdetails] = useState({name:"",email:"",password:"",cpassword:""})
   const onChange=(e)=>{
@@ -31,8 +31,9 @@ const Register = () => {
     if (json.success){
       localStorage.setItem('token',json.authtoken)
       navigate('/')
+      props.showAlert("Acoount Created sucessfully","success")
     }else{
-      alert("invalif")
+      props.showAlert("Invalid credentials","danger")
     }
    
 
