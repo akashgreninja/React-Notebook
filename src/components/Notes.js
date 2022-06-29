@@ -70,6 +70,7 @@ function Notes() {
             aria-describedby="emailHelp"
             value={note.etitle}
             onChange={onChange}
+            minLength={5} required
            
           />
          
@@ -85,6 +86,7 @@ function Notes() {
             name='edescription'
             value={note.edescription}
             onChange={onChange}
+            minLength={5} required
            
           />
         </div>
@@ -107,7 +109,7 @@ function Notes() {
       </div>
       <div className="modal-footer">
         <button type="button" ref={refClose} className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button"  onClick={handleOnClick} className="btn btn-primary">Update</button>
+        <button  disabled={note.etitle.length<5 || note.edescription.length<5} type="button"  onClick={handleOnClick} className="btn btn-primary">Update</button>
       </div>
     </div>
   </div>
@@ -115,6 +117,7 @@ function Notes() {
       
     <div className="row my-3">
       <h1>yOUR NOTES</h1>
+      {notes.length===0 &&'No notes to display'}
       {notes.map((element)=>{
         return <Noteitem key={element._id} note={element} updateNote={updateNote} />
       })}

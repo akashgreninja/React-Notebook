@@ -19,6 +19,7 @@ router.post(
   ],
   async (req, res) => {
     // checks for the erros produced while validation
+    let success=false
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -31,7 +32,7 @@ router.post(
       if (user) {
         return res
           .status(400)
-          .json({ err: "Sorry user with this email already exists" });
+          .json({ success, err: "Sorry user with this email already exists" });
       }
       const salt = await bcrypt.genSalt(10);
       const secPass = await bcrypt.hash(req.body.password, salt);
@@ -49,7 +50,8 @@ router.post(
       console.log(authtoken);
 
       //  this is just to output the data as response
-      res.json({ authtoken });
+      let success=true
+      res.json({success, authtoken });
     } catch (error) {
       console.log(error.message);
       res.status(500).send("some error from our side ");
@@ -65,6 +67,7 @@ router.post(
     body("password", "Cannot be blank").exists(),
   ],
   async (req, res) => {
+    let success=false
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -79,7 +82,8 @@ router.post(
       }
       const passwordCompare = await bcrypt.compare(password, user.password);
       if (!passwordCompare) {
-        return res.status(400).json({ error: "Please try to login again" });
+        success=false
+        return res.status(400).json({success, error: "Please try to login again" });
       }
       const data = {
         user: {
@@ -88,7 +92,8 @@ router.post(
       };
       const authtoken = jwt.sign(data, JWT_SECRET);
       console.log(authtoken);
-      res.json({ authtoken });
+      success=true
+      res.json({success, authtoken });
     } catch (error) {
       console.log(error.message);
       res.status(500).send("some error from our side ");
