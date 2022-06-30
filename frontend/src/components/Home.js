@@ -9,7 +9,9 @@ export default function Home(props) {
   return (
     
     <>
-      <Notes showAlert={showAlert}/>
+    
+      {localStorage.getItem('token')?<Notes showAlert={showAlert}/>:<h1>please sign in to continue</h1>}
+      {/* <Notes showAlert={showAlert}/> */}
     </>
   );
 }
