@@ -5,7 +5,9 @@ const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const fetchuser=require("../middleware/fetchuser")
+var cors = require('cors')
 
+router.use(cors())
 const JWT_SECRET = "AKASH";
 
 //Route 1:It is used to create a user
